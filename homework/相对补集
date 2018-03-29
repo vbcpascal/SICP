@@ -1,0 +1,60 @@
+#lang racket
+(define (getit g)
+  (if (null? g)
+      '()
+  (if (null? (cdr g))
+      (list (car g))
+      (if (= (car g) (cadr g))
+          (getit (cdr g))
+          (cons (car g) (getit (cdr g)))))))
+
+(define (get-c lst1 lst2)
+  (cond ((null? lst2) lst1)
+        ((null? lst1) '())
+        (else
+         (let ((a (car lst1))
+               (b (car lst2)))
+           (cond ((= a b) (get-c (cdr lst1) (cdr lst2)))
+                 ((< a b) (cons a
+                                (get-c (cdr lst1) lst2)))
+                 ((> a b) (get-c lst1 (cdr lst2))))))))
+(define (union-ordered-set set1 set2)
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        (else
+         (let ((x1 (car set1))
+              (x2 (car set2)))
+          (cond ((< x1 x2)
+                 (cons x1 (union-ordered-set (cdr set1) set2)))
+                ((> x1 x2)
+                 (cons x2 (union-ordered-set set1 (cdr set2))))
+                ((= x1 x2)
+                 (cons x1 (union-ordered-set (cdr set1) (cdr set2)))))))))
+(define (get-s lst1 lst2)
+  (union-ordered-set (get-c lst1 lst2) (get-c lst2 lst1)))
+(define (main)
+  (let ((a (read))
+        (b (read)))
+    (if (eq? a eof)
+        (void)
+        (let ((c (getit (sort a <)))
+              (d (getit (sort b <))))
+          (begin
+            (display (get-c c d))
+            (displayln (get-s c d))
+            (main))))))
+
+(main)
+
+
+
+
+
+
+
+
+
+
+
+         
+
